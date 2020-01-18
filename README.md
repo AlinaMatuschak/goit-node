@@ -1,6 +1,7 @@
 # 01-node-basics
 
 **_Робота заключається у змінні масива контактів за допомогою модулей fs та path._**
+**_Перевірка функціоналу на [фото](https://drive.google.com/file/d/1ef2poJ26fXtqO3fWTUJcvZ_PYmHlD0hE/view?usp=sharing)_**
 
 Створенно `4` функції:
 
