@@ -1,1 +1,1 @@
-# goit-node
+# 01-node-basics
