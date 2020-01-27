@@ -15,13 +15,13 @@ node index.js --action="list"
 > отримання конкретного контакта по `id`:
 
 ```
-node index.js --action="get" --id="id"
+node index.js --action="get" --id=id
 ```
 
 > видалення конкретного контакта:
 
 ```
-node index.js --action="remove" --id="id"
+node index.js --action="remove" --id=id
 ```
 
 > додавання контакта:

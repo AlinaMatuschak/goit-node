@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const generateId = require("./helpers/generateId");
+
 const contactsPath = path.join(__dirname, "db", "contacts.json");
 
 function listContacts() {
@@ -24,7 +26,7 @@ function removeContact(contactId) {
     const newContacts = JSON.parse(contacts).filter(
       con => con.id !== contactId
     );
-    fs.writeFile(contactsPath, newContacts, err => {
+    fs.writeFile(contactsPath, JSON.stringify(newContacts), err => {
       if (err) console.log(err);
       console.table(newContacts);
     });
@@ -38,7 +40,7 @@ function addContact(name, email, phone) {
     const newContacts = [
       ...curentContacts,
       {
-        id: curentContacts.length + 1,
+        id: generateId(curentContacts),
         name,
         email,
         phone
