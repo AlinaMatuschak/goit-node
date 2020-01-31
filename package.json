@@ -1,0 +1,30 @@
+{
+  "name": "goit-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlinaMatuschak/goit-node.git"
+  },
+  "engines": {
+    "node": "^12.14.00"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlinaMatuschak/goit-node/issues"
+  },
+  "homepage": "https://github.com/AlinaMatuschak/goit-node#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "yargs": "^15.1.0"
+  }
+}
