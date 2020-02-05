@@ -1,70 +1,59 @@
 const express = require("express");
 const app = express();
-const cors = require("cors");
 const logger = require("morgan");
 const shortid = require("shortid");
 const port = 3000;
-const {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact
-} = require("./contacts");
+const Contact = require("./model/contact");
+const dbConnection = require("./db/dbConenction");
+dbConnection();
 
-app.use(cors("*"));
 logger("dev");
 app.use(express.json());
 
 //GET /api/contacts
 app.get("/api/contacts", (req, res) => {
-  try {
-    const contacts = listContacts();
-    res.status(200).json(contacts);
-  } catch (error) {
-    console.error(error);
-  }
+  Contact.find()
+    .then(contacts => res.status(200).json(contacts))
+    .catch(error => console.log(error));
 });
 
 //GET /api/contacts/:contactId
 app.get("/api/contacts/:contactId", (req, res) => {
   const contactId = req.params.contactId;
-  const contact = getContactById(contactId);
+  Contact.findById(contactId)
+    .then(contact => {
+      if (!contact) {
+        res.status(404).json({ message: "Not found" });
+        return;
+      }
 
-  if (!contact) {
-    res.status(404).json({ message: "Not found" });
-    return;
-  }
-
-  res.status(200).json(contact);
+      res.status(200).json(contact);
+    })
+    .catch(err => console.log(err));
 });
 
 // POST /api/contacts
 app.post("/api/contacts", (req, res) => {
-  const { name, email, phone } = req.body;
+  const contactData = req.body;
+  const newContact = new Contact(contactData);
+  console.log(newContact);
 
-  if (!name || !email || !phone) {
-    res.status(400).json({ message: "missing required name field" });
-    return;
-  }
-
-  const newContact = {
-    id: shortid(),
-    name,
-    email,
-    phone
-  };
-  addContact(newContact);
-  res.status(201).json(newContact);
+  newContact
+    .save()
+    .then(result => res.status(201).json(result))
+    .catch(err => console.log(err));
 });
 
 // DELETE /api/contacts/:contactId
 app.delete("/api/contacts/:contactId", (req, res) => {
   const contactId = req.params.contactId;
-  const isDeleted = removeContact(contactId);
-  isDeleted
-    ? res.status(200).json({ message: "contact deleted" })
-    : res.status(404).json({ message: "Not found" });
+  Contact.findByIdAndDelete({ _id: contactId })
+    .then(contact => {
+      if (!contact) return res.status(404).json({ message: "Not found" });
+
+      res.status(200).json({ message: "contact deleted" });
+    })
+    .catch(err => console.log(err));
 });
 
 // PATCH /api/contacts/:contactId
@@ -76,10 +65,13 @@ app.patch("/api/contacts/:contactId", (req, res) => {
     return res.status(400).json({ message: "missing fields" });
   }
 
-  const updatedContact = updateContact(contactId, body);
-  updatedContact === null
-    ? res.status(404).json({ message: "Not found" })
-    : res.status(200).json(updatedContact);
+  Contact.findByIdAndUpdate({ _id: contactId }, { $set: body }, { new: true })
+    .then(updatedContact => {
+      if (!updatedContact) res.status(404).json({ message: "Not found" });
+
+      res.status(200).json(updatedContact);
+    })
+    .catch(err => console.log(err));
 });
 
 app.listen(port, () => {
