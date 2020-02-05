@@ -1,56 +1,71 @@
 const fs = require("fs");
 const path = require("path");
 
-const generateId = require("./helpers/generateId");
-
 const contactsPath = path.join(__dirname, "db", "contacts.json");
+const getCurentContacts = () =>
+  JSON.parse(fs.readFileSync(contactsPath, { encoding: "utf-8" }));
 
 function listContacts() {
-  fs.readFile(contactsPath, "utf8", (err, contacts) => {
-    if (err) console.log(err);
-    console.table(JSON.parse(contacts));
-  });
+  try {
+    return getCurentContacts();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function getContactById(contactId) {
-  fs.readFile(contactsPath, "utf8", (err, contacts) => {
-    if (err) console.log(err);
-    const contact = JSON.parse(contacts).find(con => con.id === contactId);
-    console.table(contact);
-  });
+  try {
+    return getCurentContacts().find(con => con.id === contactId);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function removeContact(contactId) {
-  fs.readFile(contactsPath, "utf8", (err, contacts) => {
-    if (err) console.log(err);
-    const newContacts = JSON.parse(contacts).filter(
-      con => con.id !== contactId
-    );
-    fs.writeFile(contactsPath, JSON.stringify(newContacts), err => {
-      if (err) console.log(err);
-      console.table(newContacts);
-    });
-  });
+  try {
+    const curentContacts = getCurentContacts();
+    const newContacts = curentContacts.filter(con => con.id !== contactId);
+
+    if (newContacts.length === curentContacts.length) return;
+
+    fs.writeFileSync(contactsPath, JSON.stringify(newContacts));
+    return true;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-function addContact(name, email, phone) {
-  fs.readFile(contactsPath, "utf8", (err, contacts) => {
-    const curentContacts = JSON.parse(contacts);
-    if (err) console.log(err);
-    const newContacts = [
-      ...curentContacts,
-      {
-        id: generateId(curentContacts),
-        name,
-        email,
-        phone
-      }
-    ];
-    fs.writeFile(contactsPath, JSON.stringify(newContacts), err => {
-      if (err) console.log(err);
-      console.table(newContacts);
-    });
-  });
+function addContact(newContact) {
+  try {
+    const newContacts = [...getCurentContacts(), newContact];
+    fs.writeFileSync(contactsPath, JSON.stringify(newContacts));
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-module.exports = { listContacts, getContactById, removeContact, addContact };
+function updateContact(contactId, body) {
+  try {
+    const curentContacts = getCurentContacts();
+
+    if (!getContactById(contactId)) return null;
+
+    const newContacts = curentContacts.map(contact => {
+      if (contact.id !== contactId) return contact;
+      return { ...contact, ...body };
+    });
+
+    fs.writeFileSync(contactsPath, JSON.stringify(newContacts));
+    return getContactById(contactId);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact
+};
