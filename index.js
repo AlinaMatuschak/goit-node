@@ -34,14 +34,14 @@ app.get("/api/contacts/:contactId", (req, res) => {
 
 // POST /api/contacts
 app.post("/api/contacts", (req, res) => {
-  const contactData = req.body;
-  const newContact = new Contact(contactData);
-  console.log(newContact);
+  const { name, email, phone } = req.body;
+
+  const newContact = new Contact({ name, email, phone });
 
   newContact
     .save()
     .then(result => res.status(201).json(result))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err.message));
 });
 
 // DELETE /api/contacts/:contactId
