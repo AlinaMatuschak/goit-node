@@ -22,9 +22,14 @@
   },
   "homepage": "https://github.com/AlinaMatuschak/goit-node#readme",
   "devDependencies": {
+    "morgan": "^1.9.1",
     "nodemon": "^2.0.2"
   },
   "dependencies": {
-    "yargs": "^15.1.0"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "shortid": "^2.2.15"
   }
 }
