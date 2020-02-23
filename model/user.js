@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { secretJwtKey } = require("../config/config");
 
 const userSchema = new Schema({
   email: {
@@ -59,16 +61,16 @@ userSchema.pre("save", function(next) {
   return next();
 });
 
-userSchema.methods.validatePassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
+userSchema.methods.validatePassword = async function(password) {
+  return await bcrypt.compareSync(password, this.password);
 };
 
 userSchema.methods.getJWT = function() {
   const preToken = jwt.sign(
     {
-      id: this.password
+      id: this._id
     },
-    "secrettoken"
+    secretJwtKey
   );
 
   const token = preToken;
@@ -77,6 +79,8 @@ userSchema.methods.getJWT = function() {
   this.save();
   return token;
 };
+
+userSchema.plugin(mongoosePaginate);
 
 const User = mongoose.model("User", userSchema, "users");
 
