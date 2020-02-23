@@ -2,7 +2,7 @@ const User = require("../model/user");
 
 module.exports = (req, res) => {
   try {
-    const { page = 1, limit = 20, sub } = req.query;
+    const { page = 1, limit = 5, sub } = req.query;
     const options = {
       page,
       limit
