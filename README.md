@@ -55,7 +55,7 @@ Default: `page` = 1, `limit` = 5
 > Відображення поточного контакта по `token`:
 
 ```
-@GET /api/contacts
+@GET /auth/current
 ```
 
 -в `Authorization` має бути прописано "Bearer token"
@@ -63,7 +63,7 @@ Default: `page` = 1, `limit` = 5
 > Видалення контакта по `token`:
 
 ```
-@DELETE /auth/users
+@DELETE /users
 ```
 
 -в `Authorization` має бути прописано "Bearer token"
@@ -71,7 +71,7 @@ Default: `page` = 1, `limit` = 5
 > Оновлення контакта по `token`:
 
 ```
-@PATCH /auth/users
+@PATCH /users
 ```
 
 -в `body` прописати поля, які хочеш змінити або добавити
