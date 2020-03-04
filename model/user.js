@@ -41,25 +41,22 @@ userSchema.methods.getPublicFields = function() {
   };
 };
 
-userSchema.pre("save", function(next) {
-  const user = this;
+userSchema.methods.generateHash = function() {
+  let isGenerated = true;
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) return console.log(err);
 
-  if (
-    (user.password && this.isModified("password")) ||
-    (user.password && this.isNew)
-  )
-    bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(this.password, salt, (err, hash) => {
       if (err) return next(err);
+      const userHash = hash;
 
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        if (err) return next(err);
-        user.password = hash;
-        return next();
-      });
+      this.password = userHash;
+
+      this.save().then(sam => console.log(sam));
     });
-
-  return next();
-});
+  });
+  return isGenerated;
+};
 
 userSchema.methods.validatePassword = async function(password) {
   return await bcrypt.compareSync(password, this.password);
