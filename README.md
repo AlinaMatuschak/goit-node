@@ -12,7 +12,7 @@
 @GET /contacts?page=`page`&limit=`limit`&sub=`sub`
 ```
 
-Default: `page` = 1, `limit` = 5
+Default: `page` = 1, `limit` = 5, `sub`= all
 
 > Створення нового контакта:
 

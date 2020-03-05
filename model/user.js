@@ -41,20 +41,24 @@ userSchema.methods.getPublicFields = function() {
   };
 };
 
-userSchema.methods.generateHash = function() {
-  let isGenerated = true;
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) return console.log(err);
+userSchema.methods.generateHash = async function() {
+  let isGenerated = false;
+  const salt = bcrypt.genSaltSync(10);
+  if (!salt) return console.log(err);
 
-    bcrypt.hash(this.password, salt, (err, hash) => {
-      if (err) return next(err);
-      const userHash = hash;
+  const hash = bcrypt.hashSync(this.password, salt);
+  if (!hash) return console.log(err);
 
-      this.password = userHash;
+  const userHash = hash;
 
-      this.save().then(sam => console.log(sam));
-    });
+  this.password = userHash;
+
+  await this.save().then(sam => {
+    if (sam.password) {
+      isGenerated = true;
+    }
   });
+
   return isGenerated;
 };
 

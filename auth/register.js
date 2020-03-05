@@ -13,10 +13,12 @@ module.exports = (req, res, next) => {
 
       const user = new User(body);
 
-      user.generateHash(next);
+      const isGenerated = await user.generateHash(next);
 
-      user.getJWT();
-      return res.status(201).json(user.getPublicFields());
+      if (isGenerated) return res.status(201).json(user.getPublicFields());
+
+      user.deleteOne();
+      res.status(400).json({ message: "Try again, please!!!" });
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
