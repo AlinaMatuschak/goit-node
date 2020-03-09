@@ -1,49 +1,77 @@
-# 03-mongodb
+# 04-auth
 
-**_Робота заключається у змінні масива контактів за допомогою MongoDB._**
+**_Робота заключається у змінні масива контактів за допомогою `mongoose`, `jwt`, `bcrypt`._**
 
 **_Для перевірки використовувати [Postman](https://www.getpostman.com/)_**
 
 **ІНСТУКЦІЯ:**
 
-> Відображення усіх контактів по рауту:
+> Відображення усіх контактів:
 
 ```
-@GET /api/contacts
+@GET /contacts?page=`page`&limit=`limit`&sub=`sub`
 ```
 
-> Отримання конкретного контакта по `id`:
+Default: `page` = 1, `limit` = 5, `sub`= all
+
+> Створення нового контакта:
 
 ```
-@GET /api/contacts/:contactId
-```
-
-> Видалення конкретного контакта:
-
-```
-@DELETE /api/contacts/:contactId
-```
-
-> Додавання контакта:
-
-```
-@PATCH /api/contacts/:contactId
+@POST /auth/register
 ```
 
 -в `body` має бути прописано:
 
 ```
 {
-    "name": yourName,
-    "email": yourEmail,
-    "phone": yourPhone
+    "email": "example@example.com",
+    "password": "examplepassword"
 }
 ```
 
-> Оновлення контакта по `id`:
+> Вхід в акаунт:
 
 ```
-@PATCH /api/contacts/:contactId
+@POST /auth/login
+```
+
+-в `body` має бути прописано:
+
+```
+{
+    "email": "example@example.com",
+    "password": "examplepassword"
+}
+```
+
+> Вихід з акаунта:
+
+```
+@POST /auth/logout
+```
+
+-в `Authorization` має бути прописано "Bearer token"
+
+> Відображення поточного контакта по `token`:
+
+```
+@GET /auth/current
+```
+
+-в `Authorization` має бути прописано "Bearer token"
+
+> Видалення контакта по `token`:
+
+```
+@DELETE /users
+```
+
+-в `Authorization` має бути прописано "Bearer token"
+
+> Оновлення контакта по `token`:
+
+```
+@PATCH /users
 ```
 
 -в `body` прописати поля, які хочеш змінити або добавити
